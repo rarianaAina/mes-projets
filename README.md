@@ -13,8 +13,7 @@ const projets = [
     icone: "📚",
     nom: "Révisions — QCM",
     url: "https://revisions-qcm.vercel.app/",
-    description: "…",
-    tags: ["PDF", "IA"],
+    note: "QCM générés depuis un cours PDF",
   },
 ];
 ```

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mes projets</title>
-<meta name="description" content="Les applications web que je développe : outils PDF, planning, suivi d'humeur, générateur de QCM, comparateur Instagram.">
+<meta name="description" content="Les applications web que je développe et déploie.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
 <style>
@@ -15,8 +15,6 @@
     --muted: #71717a;
     --line: #e4e4e7;
     --accent: #6366f1;
-    --accent-soft: #eef2ff;
-    --shadow: 0 1px 2px rgba(0,0,0,.05);
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -26,8 +24,6 @@
       --muted: #a1a1aa;
       --line: #27272e;
       --accent: #818cf8;
-      --accent-soft: #1e1b3a;
-      --shadow: none;
     }
   }
 
@@ -40,72 +36,43 @@
     color: var(--fg);
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
-    line-height: 1.55;
+    line-height: 1.5;
   }
 
-  .wrap { max-width: 880px; margin: 0 auto; }
+  .wrap { max-width: 540px; margin: 0 auto; }
 
-  header { padding: 64px 0 40px; }
-  h1 { margin: 0; font-size: clamp(1.75rem, 5vw, 2.5rem); letter-spacing: -0.02em; }
-  header p { margin: 10px 0 0; color: var(--muted); max-width: 46ch; }
-
-  .grid {
-    display: grid;
-    gap: 16px;
-    grid-template-columns: 1fr;
-    padding-bottom: 56px;
+  h1 {
+    margin: 0;
+    padding: 72px 0 28px;
+    font-size: clamp(1.6rem, 5vw, 2rem);
+    letter-spacing: -0.02em;
   }
-  @media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
 
-  .card {
+  ul { list-style: none; margin: 0; padding: 0 0 64px; }
+  li + li { margin-top: 8px; }
+
+  a {
     display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
     border: 1px solid var(--line);
-    border-radius: 14px;
+    border-radius: 12px;
     background: var(--surface);
-    box-shadow: var(--shadow);
     text-decoration: none;
     color: inherit;
-    transition: border-color .15s, transform .15s;
+    transition: border-color .15s;
   }
-  .card:hover, .card:focus-visible {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-  }
-  .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  a:hover, a:focus-visible { border-color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-  .icon { font-size: 1.5rem; line-height: 1; }
-  .name { margin: 0; font-size: 1.05rem; font-weight: 600; }
-  .desc { margin: 0; color: var(--muted); font-size: .9rem; flex: 1; }
+  .icon { font-size: 1.25rem; line-height: 1; }
+  .text { min-width: 0; flex: 1; }
+  .name { display: block; font-weight: 600; font-size: .95rem; }
+  .note { display: block; color: var(--muted); font-size: .82rem; }
 
-  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-  .tag {
-    font-size: .7rem;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-weight: 500;
-  }
-
-  .go { font-size: .85rem; font-weight: 500; color: var(--accent); }
-  .card:hover .go::after, .card:focus-visible .go::after { transform: translateX(3px); }
-  .go::after {
-    content: "→";
-    display: inline-block;
-    margin-left: 4px;
-    transition: transform .15s;
-  }
-
-  footer {
-    border-top: 1px solid var(--line);
-    padding: 24px 0 40px;
-    color: var(--muted);
-    font-size: .8rem;
-    text-align: center;
-  }
+  .arrow { color: var(--muted); transition: transform .15s, color .15s; }
+  a:hover .arrow, a:focus-visible .arrow { color: var(--accent); transform: translateX(3px); }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { transition: none !important; }
@@ -114,73 +81,33 @@
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>Mes projets</h1>
-    <p>Des applications web que je conçois et déploie, chacune pour résoudre un besoin précis.</p>
-  </header>
-
-  <main class="grid" id="grid"></main>
-
-  <footer>
-    Applications personnelles · hébergées sur Vercel
-  </footer>
+  <h1>Mes projets</h1>
+  <ul id="liste"></ul>
 </div>
 
 <script>
   // Pour ajouter un projet : une entrée de plus dans ce tableau.
   const projets = [
-    {
-      icone: "📚",
-      nom: "Révisions — QCM",
-      url: "https://revisions-qcm.vercel.app/",
-      description:
-        "Importez le PDF d'un cours et obtenez un QCM généré automatiquement, corrigé, avec explications et pages sources.",
-      tags: ["PDF", "IA", "Correction automatique"],
-    },
-    {
-      icone: "📄",
-      nom: "Fusion de PDF",
-      url: "https://pdf-merger-red.vercel.app/",
-      description:
-        "Réunissez plusieurs PDF et photos en un seul document. Les fichiers restent sur votre appareil, rien n'est envoyé sur Internet.",
-      tags: ["PDF", "Hors ligne"],
-    },
-    {
-      icone: "🗓️",
-      nom: "Mon planning A/B",
-      url: "https://planning-seven-nu.vercel.app/",
-      description:
-        "Un emploi du temps en semaines alternées A et B, consultable par jour, par semaine ou par mois.",
-      tags: ["Planning", "Semaines alternées"],
-    },
-    {
-      icone: "💬",
-      nom: "Humeur",
-      url: "https://humeur-nu.vercel.app/",
-      description:
-        "Dire son humeur et sa disponibilité à deux, en dix secondes, via un lien privé. Sans compte ni adresse e-mail.",
-      tags: ["À deux", "Sans compte"],
-    },
-    {
-      icone: "📊",
-      nom: "Comparateur Instagram",
-      url: "https://instagram-comparator.vercel.app/",
-      description:
-        "À partir de votre export Instagram, voyez qui vous suit sans retour, et qui ne vous suit pas en retour. Analyse faite dans le navigateur.",
-      tags: ["Instagram", "Hors ligne"],
-    },
+    { icone: "📚", nom: "Révisions — QCM",        note: "QCM générés depuis un cours PDF",      url: "https://revisions-qcm.vercel.app/" },
+    { icone: "📄", nom: "Fusion de PDF",          note: "Réunir plusieurs PDF et photos",       url: "https://pdf-merger-red.vercel.app/" },
+    { icone: "🗓️", nom: "Mon planning A/B",       note: "Emploi du temps en semaines alternées", url: "https://planning-seven-nu.vercel.app/" },
+    { icone: "💬", nom: "Humeur",                 note: "Humeur et disponibilité, à deux",      url: "https://humeur-nu.vercel.app/" },
+    { icone: "📊", nom: "Comparateur Instagram",  note: "Abonnés et abonnements comparés",      url: "https://instagram-comparator.vercel.app/" },
   ];
 
-  document.getElementById("grid").innerHTML = projets
+  document.getElementById("liste").innerHTML = projets
     .map(
       (p) => `
-      <a class="card" href="${p.url}" target="_blank" rel="noopener noreferrer">
-        <span class="icon" aria-hidden="true">${p.icone}</span>
-        <h2 class="name">${p.nom}</h2>
-        <p class="desc">${p.description}</p>
-        <span class="tags">${p.tags.map((t) => `<span class="tag">${t}</span>`).join("")}</span>
-        <span class="go">Ouvrir</span>
-      </a>`
+      <li>
+        <a href="${p.url}" target="_blank" rel="noopener noreferrer">
+          <span class="icon" aria-hidden="true">${p.icone}</span>
+          <span class="text">
+            <span class="name">${p.nom}</span>
+            <span class="note">${p.note}</span>
+          </span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </a>
+      </li>`
     )
     .join("");
 </script>
